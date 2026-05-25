@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { 
   Search, 
@@ -35,17 +34,56 @@ function ProductsCatalogContent() {
   const [minRating, setMinRating] = useState(0); // 0 = all, 3 = 3+ stars, 4 = 4+ stars
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('popularity'); // popularity, price-low, price-high, rating-high
-  const [compareList, setCompareList] = useState([]); // Array of product IDs to compare
   const [addedProductId, setAddedProductId] = useState(null); // Adding visual feedback
 
+  const [productsList, setProductsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const { addToCart } = useCart();
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [prodRes, catRes] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/categories')
+        ]);
+        if (prodRes.ok) {
+          setProductsList(await prodRes.ok ? await prodRes.json() : []);
+        }
+        if (catRes.ok) {
+          setCategoriesList(await catRes.ok ? await catRes.json() : []);
+        }
+      } catch (err) {
+        console.error('Error loading catalog data:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
   useEffect(() => {
     setCurrentCategory(searchParams.get('category') || 'all');
     setSearchQuery(searchParams.get('search') || '');
   }, [searchParams]);
 
-  const categories = [
+  const getCategoryIcon = (slug) => {
+    switch (slug) {
+      case 'all': return LayoutGrid;
+      case 'infant-formula': return Baby;
+      case 'supplements': return Leaf;
+      case 'cosmeceuticals': return Sparkles;
+      case 'surgical': return Stethoscope;
+      default: return LayoutGrid;
+    }
+  };
+
+  const categories = categoriesList.length > 0 ? categoriesList.map(c => ({
+    ...c,
+    icon: getCategoryIcon(c.id)
+  })) : [
     { id: 'all', name: 'All Products', icon: LayoutGrid },
     { id: 'infant-formula', name: 'Infant Formulas', icon: Baby },
     { id: 'supplements', name: 'Supplements', icon: Leaf },
@@ -77,17 +115,9 @@ function ProductsCatalogContent() {
     }, 2000);
   };
 
-  const handleCompareToggle = (productId, e) => {
-    e.stopPropagation();
-    setCompareList((prev) => 
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
 
   // Filter products
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = productsList.filter((p) => {
     const matchesCategory = currentCategory === 'all' || p.category === currentCategory;
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           p.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -135,24 +165,6 @@ function ProductsCatalogContent() {
 
       <main className="pt-24 pb-16 px-6 md:px-12 max-w-7xl mx-auto w-full flex-grow">
         
-        {/* Compare floating badge */}
-        {compareList.length > 0 && (
-          <div className="fixed bottom-6 right-6 z-50 bg-[#0f4c81] text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4 animate-fade-up border border-white/10">
-            <span className="text-xs font-semibold">{compareList.length} items selected to compare</span>
-            <button 
-              onClick={() => setCompareList([])}
-              className="text-xs underline hover:text-secondary-fixed outline-none cursor-pointer"
-            >
-              Clear
-            </button>
-            <Link 
-              href="#"
-              className="bg-cta-warm text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:brightness-110 btn-hover-effect"
-            >
-              Compare Now
-            </Link>
-          </div>
-        )}
 
         {/* Top Header */}
         <header className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
@@ -321,7 +333,13 @@ function ProductsCatalogContent() {
 
           {/* Right Product Grid */}
           <section className="flex-grow">
-            {sortedProducts.length === 0 ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-outline-variant/60 shadow-sm">
+                <div className="w-10 h-10 border-4 border-[#0f4c81] border-t-transparent rounded-full animate-spin mb-4" />
+                <h3 className="font-bold text-lg text-primary">Loading Catalog</h3>
+                <p className="text-outline text-xs mt-1">Retrieving verified medical imports from WooCommerce...</p>
+              </div>
+            ) : sortedProducts.length === 0 ? (
               /* Empty State */
               <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-outline-variant/60 shadow-sm">
                 <ShoppingBag className="text-outline w-16 h-16 mb-4 animate-pulse" />
@@ -337,21 +355,6 @@ function ProductsCatalogContent() {
                     className="bg-[#f8fafc] border border-outline-variant/20 rounded-2xl overflow-hidden group hover:shadow-[0px_4px_12px_rgba(15,76,129,0.06)] hover:bg-white transition-all duration-350 flex flex-col h-full relative"
                   >
                     
-                    {/* Compare Checkbox */}
-                    <div className="absolute top-4 left-4 z-20">
-                      <label 
-                        onClick={(e) => handleCompareToggle(product.id, e)}
-                        className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-on-surface-variant border border-outline-variant/20 shadow-sm cursor-pointer select-none hover:bg-white"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={compareList.includes(product.id)}
-                          onChange={() => {}} // Controlled manually via label click
-                          className="w-3.5 h-3.5 text-primary border-outline-variant rounded focus:ring-primary cursor-pointer"
-                        />
-                        Compare
-                      </label>
-                    </div>
 
                     {/* Image Area */}
                     <div className="relative h-52 bg-white flex items-center justify-center p-6 border-b border-outline-variant/10">

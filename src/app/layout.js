@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Tejasmanyata | A Journey of Care Across Nepal",
+  title: "Tejas Manyata | A Journey of Care Across Nepal",
   description: "Delivering world-class healthcare products to every family—from the bustling streets of Kathmandu to the quiet villages of the Himalayas.",
 };
 

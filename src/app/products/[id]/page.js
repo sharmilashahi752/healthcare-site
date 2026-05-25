@@ -4,7 +4,6 @@ import React, { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { 
   ChevronLeft, 
@@ -26,7 +25,10 @@ import {
 export default function ProductDetails({ params: paramsPromise }) {
   const params = use(paramsPromise);
   const productId = params.id;
-  const product = products.find((p) => p.id === productId);
+
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('specs'); // specs, safety, references
@@ -37,6 +39,27 @@ export default function ProductDetails({ params: paramsPromise }) {
 
   const { addToCart } = useCart();
 
+  useEffect(() => {
+    async function loadProduct() {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`/api/products/${productId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProduct(data);
+        } else {
+          setError('Product not found');
+        }
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Network error');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProduct();
+  }, [productId]);
+
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
@@ -46,12 +69,25 @@ export default function ProductDetails({ params: paramsPromise }) {
     });
   };
 
-  if (!product) {
+  if (isLoading) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-[#f7f9fb]">
         <Navbar />
         <main className="flex-grow flex flex-col items-center justify-center pt-24 pb-16">
-          <h2 className="text-2xl font-bold text-primary">Product Not Found</h2>
+          <div className="w-10 h-10 border-4 border-[#0f4c81] border-t-transparent rounded-full animate-spin mb-4" />
+          <p className="text-on-surface-variant font-medium text-sm">Retrieving product certifications and specifications...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="flex flex-col min-h-screen bg-[#f7f9fb]">
+        <Navbar />
+        <main className="flex-grow flex flex-col items-center justify-center pt-24 pb-16">
+          <h2 className="text-2xl font-bold text-primary">{error || 'Product Not Found'}</h2>
           <Link href="/products" className="text-secondary hover:underline mt-4 flex items-center gap-2">
             <ChevronLeft className="w-5 h-5" /> Back to Products
           </Link>

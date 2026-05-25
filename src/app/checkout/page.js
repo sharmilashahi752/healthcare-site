@@ -61,6 +61,7 @@ export default function CheckoutPage() {
   // Mobile wallets state
   const [walletPhone, setWalletPhone] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  const [otpError, setOtpError] = useState('');
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpTimer, setOtpTimer] = useState(60);
@@ -220,13 +221,45 @@ export default function CheckoutPage() {
     }
   };
 
+  const submitOrderToWooCommerce = async () => {
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          shippingForm,
+          billingForm: billingSameAsShipping ? shippingForm : billingForm,
+          cartItems,
+          paymentMethod,
+          total,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setOrderNumber(result.orderNumber || `WC-${result.orderId}`);
+          setIsSuccess(true);
+          clearCart();
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error('Error submitting order to API:', error);
+      return false;
+    }
+  };
+
   const triggerProcessingSimulation = (completionCallback) => {
     setIsProcessing(true);
     setProcessingText('Establishing secure gateway connection...');
     setTimeout(() => {
       setProcessingText('Verifying credentials & authorization details...');
       setTimeout(() => {
-        setProcessingText('Finalizing transaction with bank systems...');
+        setProcessingText('Transmitting order to WooCommerce database...');
         setTimeout(() => {
           setIsProcessing(false);
           completionCallback();
@@ -246,11 +279,14 @@ export default function CheckoutPage() {
       setShowOtpModal(true);
     } else {
       // Directly process Card / Bank Transfer
-      triggerProcessingSimulation(() => {
-        const randomOrder = 'TM-' + Math.floor(100000 + Math.random() * 900000);
-        setOrderNumber(randomOrder);
-        setIsSuccess(true);
-        clearCart();
+      triggerProcessingSimulation(async () => {
+        setIsProcessing(true);
+        setProcessingText('Confirming order registration...');
+        const success = await submitOrderToWooCommerce();
+        setIsProcessing(false);
+        if (!success) {
+          alert('There was an issue processing your order. Please try again.');
+        }
       });
     }
   };
@@ -263,11 +299,14 @@ export default function CheckoutPage() {
     }
     
     setShowOtpModal(false);
-    triggerProcessingSimulation(() => {
-      const randomOrder = 'TM-' + Math.floor(100000 + Math.random() * 900000);
-      setOrderNumber(randomOrder);
-      setIsSuccess(true);
-      clearCart();
+    triggerProcessingSimulation(async () => {
+      setIsProcessing(true);
+      setProcessingText('Verifying OTP code...');
+      const success = await submitOrderToWooCommerce();
+      setIsProcessing(false);
+      if (!success) {
+        alert('There was an issue verifying your wallet. Please try again.');
+      }
     });
   };
 

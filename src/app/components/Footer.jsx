@@ -13,12 +13,8 @@ export default function Footer() {
           {/* Brand block */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <svg className="w-8 h-8" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="60" rx="12" fill="#0f4c81" />
-                <path d="M25 30 H35 M30 25 V35" stroke="white" strokeWidth="4" strokeLinecap="round" />
-                <path d="M38 22 L45 15" stroke="#2dd4bf" strokeWidth="3" strokeLinecap="round" />
-              </svg>
-              <span className="font-bold text-xl text-primary tracking-tight">Tejasmanyata</span>
+              <img src="/images/logo.png" alt="Tejas Manyata Logo" className="w-11 h-11 object-contain" />
+              <span className="font-bold text-xl text-primary tracking-tight">Tejas Manyata</span>
             </div>
             <p className="text-on-surface-variant max-w-xs text-xs md:text-sm leading-relaxed">
               Delivering quality healthcare solutions across Nepal since 2012.
@@ -83,13 +79,17 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="font-bold text-primary text-sm uppercase tracking-wider">Contact Info</h4>
             <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-on-surface-variant text-xs font-semibold">
-                <MapPin className="w-4 h-4 text-secondary flex-shrink-0" />
-                <span>Kathmandu, Nepal</span>
+              <li className="flex items-start gap-3 text-on-surface-variant text-xs font-semibold">
+                <MapPin className="w-4 h-4 text-secondary flex-shrink-0 mt-0.5" />
+                <span>Saugat Marg, Bargachi, Biratnagar-2</span>
               </li>
               <li className="flex items-center gap-3 text-on-surface-variant text-xs font-semibold">
                 <Mail className="w-4 h-4 text-secondary flex-shrink-0" />
-                <span>info@tejasmanyata.com</span>
+                <a href="mailto:tmcbintlgroup@gmail.com" className="hover:underline">tmcbintlgroup@gmail.com</a>
+              </li>
+              <li className="flex items-start gap-3 text-on-surface-variant text-xs font-semibold">
+                <Phone className="w-4 h-4 text-secondary flex-shrink-0 mt-0.5" />
+                <span>9705036555, 9802020001</span>
               </li>
             </ul>
             {/* Social Icons */}
@@ -109,7 +109,7 @@ export default function Footer() {
 
         {/* Bottom divider and copyright */}
         <div className="mt-16 pt-8 border-t border-outline-variant/30 text-center text-on-surface-variant text-xs font-light">
-          &copy; 2026 Tejasmanyata Healthcare. All Rights Reserved.
+          &copy; 2026 Tejas Manyata Healthcare. All Rights Reserved.
         </div>
       </div>
     </footer>

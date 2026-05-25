@@ -34,13 +34,8 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-3">
-            {/* SVG Logo Mark */}
-            <svg className="w-8 h-8" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="60" height="60" rx="12" fill="#0f4c81" />
-              <path d="M25 30 H35 M30 25 V35" stroke="white" strokeWidth="4" strokeLinecap="round" />
-              <path d="M38 22 L45 15" stroke="#2dd4bf" strokeWidth="3" strokeLinecap="round" />
-            </svg>
-            <span className="font-sans font-bold text-xl text-primary tracking-tight">Tejasmanyata</span>
+            <img src="/images/logo.png" alt="Tejas Manyata Logo" className="w-11 h-11 object-contain" />
+            <span className="font-sans font-bold text-xl text-primary tracking-tight">Tejas Manyata</span>
           </Link>
         </div>
 
@@ -144,7 +139,10 @@ export default function Navbar() {
         }`}
       >
         <div className="flex justify-between items-center mb-10">
-          <span className="font-bold text-xl text-primary">Tejasmanyata</span>
+          <div className="flex items-center gap-2">
+            <img src="/images/logo.png" alt="Tejas Manyata Logo" className="w-9 h-9 object-contain" />
+            <span className="font-bold text-lg text-primary">Tejas Manyata</span>
+          </div>
           <button className="p-2 outline-none" onClick={toggleMenu}>
             <X className="w-6 h-6" />
           </button>

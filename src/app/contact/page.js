@@ -92,8 +92,8 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="font-bold text-[10px] text-primary uppercase tracking-wider">Physical Address</h4>
-                  <p className="text-on-surface font-semibold text-xs mt-0.5">Kathmandu, Nepal</p>
-                  <p className="text-on-surface-variant text-[11px] font-light">Healthcare District, Ward 10</p>
+                  <p className="text-on-surface font-semibold text-xs mt-0.5">Biratnagar, Nepal</p>
+                  <p className="text-on-surface-variant text-[11px] font-light">Saugat Marg, Bargachi, Biratnagar-2</p>
                 </div>
               </div>
 
@@ -104,8 +104,8 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="font-bold text-[10px] text-primary uppercase tracking-wider">Professional Email</h4>
-                  <a href="mailto:info@tejasmanyata.com" className="text-on-surface font-semibold text-xs mt-0.5 hover:underline block">
-                    info@tejasmanyata.com
+                  <a href="mailto:tmcbintlgroup@gmail.com" className="text-on-surface font-semibold text-xs mt-0.5 hover:underline block">
+                    tmcbintlgroup@gmail.com
                   </a>
                 </div>
               </div>
@@ -117,7 +117,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="font-bold text-[10px] text-primary uppercase tracking-wider">Dedicated Support</h4>
-                  <p className="text-on-surface font-semibold text-xs mt-0.5">+977-1-4XXXXXX</p>
+                  <p className="text-on-surface font-semibold text-xs mt-0.5">9705036555, 9802020001</p>
                 </div>
               </div>
 
@@ -304,11 +304,11 @@ export default function ContactPage() {
         <section>
           <div className="w-full h-80 relative overflow-hidden border-b border-outline-variant/10">
             <iframe 
-              src="https://maps.google.com/maps?q=Gairidhara,%20Kathmandu,%20Nepal&t=&z=16&ie=UTF8&iwloc=B&output=embed" 
+              src="https://maps.google.com/maps?q=Saugat%20Marg,%20Bargachi,%20Biratnagar,%20Nepal&t=&z=16&ie=UTF8&iwloc=B&output=embed" 
               className="w-full h-full border-0 filter grayscale contrast-125 opacity-90" 
               allowFullScreen="" 
               loading="lazy"
-              title="Tejasmanyata Healthcare HQ Google Map"
+              title="Tejas Manyata Healthcare HQ Google Map"
             />
           </div>
         </section>
@@ -322,7 +322,10 @@ export default function ContactPage() {
             
             {/* Column 1: Info */}
             <div className="space-y-4">
-              <span className="font-sans font-bold text-xl text-primary tracking-tight">Tejasmanyata</span>
+              <div className="flex items-center gap-3">
+                <img src="/images/logo.png" alt="Tejas Manyata Logo" className="w-9 h-9 object-contain" />
+                <span className="font-sans font-bold text-xl text-primary tracking-tight">Tejas Manyata</span>
+              </div>
               <p className="text-on-surface-variant text-xs md:text-sm leading-relaxed font-light max-w-xs">
                 Pioneering healthcare excellence in Nepal through innovative medical solutions and unwavering professional support.
               </p>
@@ -350,7 +353,7 @@ export default function ContactPage() {
                 </div>
               </div>
               <p className="text-[10px] text-on-surface-variant font-light pt-2">
-                &copy; 2024 Tejasmanyata Healthcare. All rights reserved.
+                &copy; 2026 Tejas Manyata Healthcare. All rights reserved.
               </p>
             </div>
 
